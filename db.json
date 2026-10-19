@@ -7,8 +7,7 @@
       "status": "Active",
       "lastServiceKm": 10000,
       "currentKm": 15000,
-      "city": "San Jose",
-      "alertLevel": "None"
+      "city": "San Jose"
     },
     {
       "id": 2,
@@ -17,8 +16,7 @@
       "status": "Active",
       "lastServiceKm": 0,
       "currentKm": 12000,
-      "city": "Alajuela",
-      "alertLevel": "None"
+      "city": "Alajuela"
     },
     {
       "id": 3,
@@ -27,8 +25,7 @@
       "status": "Active",
       "lastServiceKm": 5000,
       "currentKm": 8000,
-      "city": "Kuwait City",
-      "alertLevel": "None"
+      "city": "Kuwait City"
     },
     {
       "id": 4,
@@ -37,8 +34,7 @@
       "status": "Active",
       "lastServiceKm": 1000,
       "currentKm": 15000,
-      "city": "Kuwait City",
-      "alertLevel": "None"
+      "city": "Kuwait City"
     },
     {
       "id": 5,
@@ -47,8 +43,7 @@
       "status": "Inactive",
       "lastServiceKm": 0,
       "currentKm": 20000,
-      "city": "Heredia",
-      "alertLevel": "None"
+      "city": "Heredia"
     },
     {
       "id": 6,
@@ -57,18 +52,16 @@
       "status": "Active",
       "lastServiceKm": 5000,
       "currentKm": 8000,
-      "city": "",
-      "alertLevel": "None"
+      "city": ""
     },
     {
       "id": 7,
       "plate": "STU-901",
       "model": "Nissan NP300",
       "status": "Active",
-      "lastServiceKm": 2000,
+      "lastServiceKm": 10000,
       "currentKm": 15000,
-      "city": "Yakutsk",
-      "alertLevel": "None"
+      "city": "Yakutsk"
     }
   ]
 }
