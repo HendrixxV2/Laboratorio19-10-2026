@@ -1,0 +1,74 @@
+{
+  "vehicles": [
+    {
+      "id": 1,
+      "plate": "ABC-123",
+      "model": "Ford Transit",
+      "status": "Active",
+      "lastServiceKm": 10000,
+      "currentKm": 15000,
+      "city": "San Jose",
+      "alertLevel": "None"
+    },
+    {
+      "id": 2,
+      "plate": "DEF-456",
+      "model": "Toyota Hilux",
+      "status": "Active",
+      "lastServiceKm": 0,
+      "currentKm": 12000,
+      "city": "Alajuela",
+      "alertLevel": "None"
+    },
+    {
+      "id": 3,
+      "plate": "GHI-789",
+      "model": "Chevrolet NHR",
+      "status": "Active",
+      "lastServiceKm": 5000,
+      "currentKm": 8000,
+      "city": "Kuwait City",
+      "alertLevel": "None"
+    },
+    {
+      "id": 4,
+      "plate": "JKL-012",
+      "model": "Hyundai H100",
+      "status": "Active",
+      "lastServiceKm": 1000,
+      "currentKm": 15000,
+      "city": "Kuwait City",
+      "alertLevel": "None"
+    },
+    {
+      "id": 5,
+      "plate": "MNO-345",
+      "model": "Kia K2700",
+      "status": "Inactive",
+      "lastServiceKm": 0,
+      "currentKm": 20000,
+      "city": "Heredia",
+      "alertLevel": "None"
+    },
+    {
+      "id": 6,
+      "plate": "PQR-678",
+      "model": "Mazda BT50",
+      "status": "Active",
+      "lastServiceKm": 5000,
+      "currentKm": 8000,
+      "city": "",
+      "alertLevel": "None"
+    },
+    {
+      "id": 7,
+      "plate": "STU-901",
+      "model": "Nissan NP300",
+      "status": "Active",
+      "lastServiceKm": 2000,
+      "currentKm": 15000,
+      "city": "Yakutsk",
+      "alertLevel": "None"
+    }
+  ]
+}
