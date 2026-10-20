@@ -22,8 +22,8 @@ try {
 }
 
 try {
-    const n8n = JSON.parse(fs.readFileSync('Alertas Mantenimiento Flota.json', 'utf8'));
-    fs.writeFileSync('Alertas Mantenimiento Flota.json', JSON.stringify(limpiar(n8n), null, 2));
+    const n8n = JSON.parse(fs.readFileSync('AlertasMantenimientoFlota.json', 'utf8'));
+    fs.writeFileSync('AlertasMantenimientoFlota.json', JSON.stringify(limpiar(n8n), null, 2));
     console.log('✅ Workflow limpiado');
 } catch (e) {
     console.log('❌ Error workflow:', e.message);
