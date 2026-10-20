@@ -63,6 +63,5 @@
       "currentKm": 15000,
       "city": "Yakutsk"
     }
-  ],
-  "$schema": "./node_modules/json-server/schema.json"
+  ]
 }
