@@ -1,71 +1,31 @@
-// Clase 1: Representa el Vehículo y su estado mecánico
 class Vehicle {
     constructor(id, plate, model, status, lastServiceKm, currentKm, city) {
         this.id = id;
         this.plate = plate;
         this.model = model;
-        this.status = status; // 'Active', 'Inactive'
+        this.status = status;
         this.lastServiceKm = lastServiceKm;
         this.currentKm = currentKm;
         this.city = city;
         this.alertLevel = "None";
     }
-
-    // Regla de Negocio 1: Cálculo de desgaste
-    needsMaintenance() {
-        const kmSinceService = this.currentKm - this.lastServiceKm;
-        return kmSinceService > 10000;
-    }
-
-    hasValidLocation() {
-        return typeof this.city === 'string' && this.city.trim() !== "";
-    }
-
-    // Método auxiliar para actualizar estado
-    updateAlert(level) {
-        this.alertLevel = level;
-    }
+    needsMaintenance() { return (this.currentKm - this.lastServiceKm) > 10000; }
+    hasValidLocation() { return this.city && typeof this.city === 'string' && this.city.trim() !== ""; }
+    updateAlert(level) { this.alertLevel = level; }
 }
-
-// Clase 2: Gestiona las condiciones externas y toma decisiones
 class FleetManager {
-    constructor(weatherData) {
-        this.weatherData = weatherData || {};
-    }
-
-    // Regla de Negocio 2: Evaluación climática
-    isClimateRisk(tempCelsius) {
-        if (typeof tempCelsius !== 'number' || !Number.isFinite(tempCelsius)) return false;
-        return tempCelsius > 35 || tempCelsius < -5;
-    }
-
-    // Regla de Negocio 3 y 5: Decisión final integrada
-    evaluateVehicle(vehicle) {
-        if (vehicle.status !== 'Active') {
-            vehicle.updateAlert("Inactivo - Sin Monitoreo");
-            return vehicle;
-        }
-
-        if (!vehicle.hasValidLocation()) {
-            vehicle.updateAlert("Error: Ubicación no válida");
-            return vehicle;
-        }
-
-        const maintenanceNeeded = vehicle.needsMaintenance();
-        const climateRisk = this.isClimateRisk(this.weatherData.temp);
-
-        if (maintenanceNeeded && climateRisk) {
-            vehicle.updateAlert("CRÍTICO: Parada Inmediata");
-        } else if (maintenanceNeeded) {
-            vehicle.updateAlert("Mantenimiento Requerido");
-        } else if (climateRisk) {
-            vehicle.updateAlert("Riesgo Climático");
-        } else {
-            vehicle.updateAlert("OK");
-        }
-        
-        return vehicle;
+    constructor(weatherData) { this.weatherData = weatherData || { temp: null }; }
+    isClimateRisk(t) { if (t === null || t === undefined) return false; return t > 35 || t < -5; }
+    evaluateVehicle(v) {
+        if (v.status !== 'Active') { v.updateAlert("Inactivo"); return v; }
+        if (!v.hasValidLocation()) { v.updateAlert("Error Ubicación"); return v; }
+        const mant = v.needsMaintenance();
+        const clim = this.isClimateRisk(this.weatherData.temp);
+        if (mant && clim) v.updateAlert("CRÍTICO");
+        else if (mant) v.updateAlert("Mantenimiento");
+        else if (clim) v.updateAlert("Riesgo Climático");
+        else v.updateAlert("OK");
+        return v;
     }
 }
-
 module.exports = { Vehicle, FleetManager };
