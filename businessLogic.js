@@ -17,6 +17,10 @@ class Vehicle {
         return kmSinceService > 10000;
     }
 
+    hasValidLocation() {
+        return typeof this.city === 'string' && this.city.trim() !== "";
+    }
+
     // Método auxiliar para actualizar estado
     updateAlert(level) {
         this.alertLevel = level;
@@ -26,18 +30,24 @@ class Vehicle {
 // Clase 2: Gestiona las condiciones externas y toma decisiones
 class FleetManager {
     constructor(weatherData) {
-        this.weatherData = weatherData; // Objeto con temp, condition, etc.
+        this.weatherData = weatherData || {};
     }
 
     // Regla de Negocio 2: Evaluación climática
     isClimateRisk(tempCelsius) {
+        if (typeof tempCelsius !== 'number' || !Number.isFinite(tempCelsius)) return false;
         return tempCelsius > 35 || tempCelsius < -5;
     }
 
     // Regla de Negocio 3 y 5: Decisión final integrada
     evaluateVehicle(vehicle) {
         if (vehicle.status !== 'Active') {
-            vehicle.updateAlert("Inactive - No Monitor");
+            vehicle.updateAlert("Inactivo - Sin Monitoreo");
+            return vehicle;
+        }
+
+        if (!vehicle.hasValidLocation()) {
+            vehicle.updateAlert("Error: Ubicación no válida");
             return vehicle;
         }
 
@@ -45,11 +55,11 @@ class FleetManager {
         const climateRisk = this.isClimateRisk(this.weatherData.temp);
 
         if (maintenanceNeeded && climateRisk) {
-            vehicle.updateAlert("CRITICAL: Stop Immediately");
+            vehicle.updateAlert("CRÍTICO: Parada Inmediata");
         } else if (maintenanceNeeded) {
-            vehicle.updateAlert("Maintenance Required");
+            vehicle.updateAlert("Mantenimiento Requerido");
         } else if (climateRisk) {
-            vehicle.updateAlert("Climate Risk Warning");
+            vehicle.updateAlert("Riesgo Climático");
         } else {
             vehicle.updateAlert("OK");
         }
@@ -57,3 +67,5 @@ class FleetManager {
         return vehicle;
     }
 }
+
+module.exports = { Vehicle, FleetManager };

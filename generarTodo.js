@@ -1,4 +1,7 @@
 const fs = require('fs');
+const path = require('path');
+
+const projectPath = (fileName) => path.join(__dirname, fileName);
 
 // ==========================================
 // 1. GENERAR db.json LIMPIO DESDE CERO
@@ -15,7 +18,7 @@ const dbContent = {
   ]
 };
 
-fs.writeFileSync('db.json', JSON.stringify(dbContent, null, 2));
+fs.writeFileSync(projectPath('db.json'), JSON.stringify(dbContent, null, 2));
 console.log('✅ db.json generado desde cero (sin espacios)');
 
 // ==========================================
@@ -27,6 +30,7 @@ const workflowContent = {
     {
       parameters: {
         path: "fleet-alert",
+        httpMethod: "POST",
         responseMode: "responseNode",
         options: {}
       },
@@ -50,7 +54,7 @@ const workflowContent = {
     },
     {
       parameters: {
-        url: "=https://api.openweathermap.org/data/2.5/weather?q={{ $json.city }}&appid=a16d5c290d04cccc8e5eede6d8d75b55&units=metric",
+        url: "={{ 'https://api.openweathermap.org/data/2.5/weather?q=' + encodeURIComponent($json.city || '') + '&appid=a16d5c290d04cccc8e5eede6d8d75b55&units=metric' }}",
         options: {
           response: {
             response: {
@@ -171,10 +175,15 @@ const workflowContent = {
   tags: []
 };
 
-fs.writeFileSync('AlertasMantenimientoFlota.json', JSON.stringify(workflowContent, null, 2));
+const codeNode = workflowContent.nodes.find((node) => node.name === "3. Lógica POO (Code Node)");
+codeNode.parameters.jsCode = fs.readFileSync(projectPath('n8n-code.js'), 'utf8').trim();
+workflowContent.nodes.find((node) => node.name === "5. Actualizar JSON Server").parameters.jsonBody =
+  "={{ { alertLevel: $json.alertLevel } }}";
+
+fs.writeFileSync(projectPath('AlertasMantenimientoFlota.json'), JSON.stringify(workflowContent, null, 2));
 console.log('✅ AlertasMantenimientoFlota.json generado desde cero (sin espacios)');
 
 console.log('\n🎉 Archivos generados correctamente. Ahora:');
-console.log('1. Reinicia JSON Server: npx json-server --watch db.json --port 3000');
+console.log('1. Inicia JSON Server: npm run start:json-server');
 console.log('2. Importa AlertasMantenimientoFlota.json en n8n (Ctrl+O)');
-console.log('3. Ejecuta el Webhook desde Postman');
+console.log('3. Ejecuta el webhook de prueba desde Postman: POST http://localhost:5678/webhook-test/fleet-alert');

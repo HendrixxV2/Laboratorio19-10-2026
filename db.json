@@ -1,16 +1,16 @@
 {
   "vehicles": [
     {
-      "id": 1,
+      "id": "1",
       "plate": "ABC-123",
       "model": "Ford Transit",
-      "status": "Active",
+      "status": "Inactive",
       "lastServiceKm": 10000,
       "currentKm": 15000,
       "city": "San Jose"
     },
     {
-      "id": 2,
+      "id": "2",
       "plate": "DEF-456",
       "model": "Toyota Hilux",
       "status": "Active",
@@ -19,7 +19,7 @@
       "city": "Alajuela"
     },
     {
-      "id": 3,
+      "id": "3",
       "plate": "GHI-789",
       "model": "Chevrolet NHR",
       "status": "Active",
@@ -28,7 +28,7 @@
       "city": "Kuwait City"
     },
     {
-      "id": 4,
+      "id": "4",
       "plate": "JKL-012",
       "model": "Hyundai H100",
       "status": "Active",
@@ -37,7 +37,7 @@
       "city": "Kuwait City"
     },
     {
-      "id": 5,
+      "id": "5",
       "plate": "MNO-345",
       "model": "Kia K2700",
       "status": "Inactive",
@@ -46,7 +46,7 @@
       "city": "Heredia"
     },
     {
-      "id": 6,
+      "id": "6",
       "plate": "PQR-678",
       "model": "Mazda BT50",
       "status": "Active",
@@ -55,7 +55,7 @@
       "city": ""
     },
     {
-      "id": 7,
+      "id": "7",
       "plate": "STU-901",
       "model": "Nissan NP300",
       "status": "Active",
@@ -63,5 +63,6 @@
       "currentKm": 15000,
       "city": "Yakutsk"
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

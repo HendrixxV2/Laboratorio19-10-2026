@@ -4,6 +4,7 @@
     {
       "parameters": {
         "path": "fleet-alert",
+        "httpMethod": "POST",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -33,7 +34,7 @@
     },
     {
       "parameters": {
-        "url": "=https://api.openweathermap.org/data/2.5/weather?q={{ $json.city }}&appid=a16d5c290d04cccc8e5eede6d8d75b55&units=metric",
+        "url": "={{ 'https://api.openweathermap.org/data/2.5/weather?q=' + encodeURIComponent($json.city || '') + '&appid=a16d5c290d04cccc8e5eede6d8d75b55&units=metric' }}",
         "options": {
           "response": {
             "response": {
@@ -55,7 +56,7 @@
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "class Vehicle {\n    constructor(id, plate, model, status, lastServiceKm, currentKm, city) {\n        this.id = id;\n        this.plate = plate;\n        this.model = model;\n        this.status = status;\n        this.lastServiceKm = lastServiceKm;\n        this.currentKm = currentKm;\n        this.city = city;\n        this.alertLevel = 'None';\n    }\n    needsMaintenance() {\n        return (this.currentKm - this.lastServiceKm) > 10000;\n    }\n    hasValidLocation() {\n        return this.city && typeof this.city === 'string' && this.city.trim() !== '';\n    }\n    updateAlert(level) {\n        this.alertLevel = level;\n    }\n}\nclass FleetManager {\n    constructor(weatherData) {\n        this.weatherData = weatherData || { temp: null };\n    }\n    isClimateRisk(tempCelsius) {\n        if (tempCelsius === null || tempCelsius === undefined) return false;\n        return tempCelsius > 35 || tempCelsius < -5;\n    }\n    evaluateVehicle(vehicle) {\n        if (vehicle.status !== 'Active') {\n            vehicle.updateAlert('Inactivo - Sin Monitoreo');\n            return vehicle;\n        }\n        if (!vehicle.hasValidLocation()) {\n            vehicle.updateAlert('Error: Ubicación no válida');\n            return vehicle;\n        }\n        const maintenanceNeeded = vehicle.needsMaintenance();\n        const temp = this.weatherData.temp;\n        const climateRisk = this.isClimateRisk(temp);\n        if (maintenanceNeeded && climateRisk) {\n            vehicle.updateAlert('CRÍTICO: Parada Inmediata');\n        } else if (maintenanceNeeded) {\n            vehicle.updateAlert('Mantenimiento Requerido');\n        } else if (climateRisk) {\n            vehicle.updateAlert('Riesgo Climático');\n        } else {\n            vehicle.updateAlert('OK');\n        }\n        return vehicle;\n    }\n}\nconst vehicleData = $json;\nlet weatherData = {};\ntry {\n    weatherData = $node['2. Obtener Clima (API Externa)'].json.main;\n} catch (error) {\n    weatherData = { temp: null };\n}\nconst vehicle = new Vehicle(vehicleData.id, vehicleData.plate, vehicleData.model, vehicleData.status, vehicleData.lastServiceKm, vehicleData.currentKm, vehicleData.city);\nconst manager = new FleetManager(weatherData);\nconst evaluatedVehicle = manager.evaluateVehicle(vehicle);\nreturn { json: evaluatedVehicle };"
+        "jsCode": "class Vehicle {\r\n    constructor(id, plate, model, status, lastServiceKm, currentKm, city) {\r\n        this.id = id;\r\n        this.plate = plate;\r\n        this.model = model;\r\n        this.status = status;\r\n        this.lastServiceKm = lastServiceKm;\r\n        this.currentKm = currentKm;\r\n        this.city = city;\r\n        this.alertLevel = 'None';\r\n    }\r\n    needsMaintenance() {\r\n        return (this.currentKm - this.lastServiceKm) > 10000;\r\n    }\r\n    hasValidLocation() {\r\n        return typeof this.city === 'string' && this.city.trim() !== '';\r\n    }\r\n    updateAlert(level) {\r\n        this.alertLevel = level;\r\n    }\r\n}\r\nclass FleetManager {\r\n    constructor(weatherData) {\r\n        this.weatherData = weatherData || {};\r\n    }\r\n    isClimateRisk(tempCelsius) {\r\n        if (typeof tempCelsius !== 'number' || !Number.isFinite(tempCelsius)) return false;\r\n        return tempCelsius > 35 || tempCelsius < -5;\r\n    }\r\n    evaluateVehicle(vehicle) {\r\n        if (vehicle.status !== 'Active') {\r\n            vehicle.updateAlert('Inactivo - Sin Monitoreo');\r\n            return vehicle;\r\n        }\r\n        if (!vehicle.hasValidLocation()) {\r\n            vehicle.updateAlert('Error: Ubicación no válida');\r\n            return vehicle;\r\n        }\r\n        const maintenanceNeeded = vehicle.needsMaintenance();\r\n        const climateRisk = this.isClimateRisk(this.weatherData.temp);\r\n        if (maintenanceNeeded && climateRisk) {\r\n            vehicle.updateAlert('CRÍTICO: Parada Inmediata');\r\n        } else if (maintenanceNeeded) {\r\n            vehicle.updateAlert('Mantenimiento Requerido');\r\n        } else if (climateRisk) {\r\n            vehicle.updateAlert('Riesgo Climático');\r\n        } else {\r\n            vehicle.updateAlert('OK');\r\n        }\r\n        return vehicle;\r\n    }\r\n}\r\n\r\nconst vehicleData = $('1. Obtener Vehículos (JSON Server)').item.json;\r\nconst weatherData = $json.main || {};\r\nconst vehicle = new Vehicle(\r\n    vehicleData.id,\r\n    vehicleData.plate,\r\n    vehicleData.model,\r\n    vehicleData.status,\r\n    vehicleData.lastServiceKm,\r\n    vehicleData.currentKm,\r\n    vehicleData.city\r\n);\r\nconst manager = new FleetManager(weatherData);\r\nreturn { json: manager.evaluateVehicle(vehicle) };"
       },
       "id": "d59424b5-bc9c-4874-b9f5-5c1656397b9e",
       "name": "3. Lógica POO (Code Node)",
@@ -105,7 +106,7 @@
         "url": "=http://localhost:3000/vehicles/{{ $json.id }}",
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={{ JSON.stringify({ alertLevel: $json.alertLevel }) }}",
+        "jsonBody": "={{ { alertLevel: $json.alertLevel } }}",
         "options": {}
       },
       "id": "68b06fdd-6eca-488b-b938-3e8ef180edf7",
